@@ -19,7 +19,6 @@
                     <FieldButton
                         :label="key"
                         :jsonPath="jsonPath.concat(key)"
-                        :definition="definition[key]"
                         />
                 </div>
                 <StructArray v-if="Array.isArray(value)" :jsonPath="jsonPath.concat(key)" :definition="definition[key]" :value="value"/>
@@ -28,7 +27,6 @@
                     <FieldButton
                         :label="value"
                         :jsonPath="jsonPath.concat(key)"
-                        :definition="definition[key]"
                         />
                 </div>
             </div>
@@ -58,7 +56,6 @@ export default {
         value: Object,
         type: String,
         jsonPath: Array,
-        root: Boolean,
     },
     computed: {
         isArray: function() {
@@ -70,12 +67,7 @@ export default {
             return innerData;
         },
         definition: function() {
-            if (this.root) {
-                return Definition.root;
-            } else {
-                return Definition.structs[this.type];
-            }
-            
+            return Definition.structs[this.type];
         }
     },
     methods: {

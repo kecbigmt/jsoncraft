@@ -24,6 +24,10 @@ export default {
             let newValue;
             if (this.type === 'number') {
                 newValue = parseInt(e.target.value);
+                // avoid value from being null
+                if (!newValue) {
+                    newValue = 0;
+                }
             } else if (this.type === 'checkbox') {
                 newValue = !this.checked;
             } else {

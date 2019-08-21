@@ -10,8 +10,6 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p>{{ jsonPath }}</p>
-                    <p>{{ definition }}</p>
                     <div class="form-group">
                         <label>Choose data type:</label>
                         <select class="form-control" v-model="dataType">
@@ -35,9 +33,9 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" @click="resetModal">Close</button>
-                    <button v-if="isArrayItem" type="button" class="btn btn-danger" @click="removeArrayItem">Delete</button>
-                    <button v-if="isArray" type="button" class="btn btn-primary" @click="addStruct">Add</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button v-if="isArrayItem" type="button" class="btn btn-danger" data-dismiss="modal" @click="removeArrayItem">Delete</button>
+                    <button v-if="isArray && !isArrayItem" type="button" class="btn btn-primary" @click="addStruct">Add</button>
                     <button v-else type="button" class="btn btn-primary" data-dismiss="modal" @click="updateStruct">Update</button>
                 </div>
             </div>
@@ -46,6 +44,8 @@
 </template>
 
 <script>
+import jp from 'jsonpath';
+
 import store from '../store';
 import Definition from '../config/definition.json';
 
@@ -59,14 +59,15 @@ export default {
     },
     computed: {
         jsonPath: () => store.state.modalProps.jsonPath,
-        definition: () => store.state.modalProps.definition,
-        isArray: ()  => store.state.modalProps.definition && store.state.modalProps.definition.array,
+        //definition: () => store.state.modalProps.definition,
+        definition: () => store.getters.modalFieldDefinition,
+        isArray: ()  => store.getters.modalFieldDefinition && store.getters.modalFieldDefinition.array,
         isArrayItem: () => {
             const jsonPath = store.state.modalProps.jsonPath;
             return jsonPath ? !isNaN(jsonPath[jsonPath.length - 1]) : false;
         },
         availableDataTypes () {
-            const dataType = store.state.modalProps.definition && store.state.modalProps.definition.dataType;
+            const dataType = store.getters.modalFieldDefinition && store.getters.modalFieldDefinition.dataType;
             if (dataType) {
                 if (typeof dataType === 'string') {
                     return [dataType];
@@ -84,20 +85,31 @@ export default {
         }
     },
     watch: {
-        definition () {
-            const def = this.definition.dataType;
-            this.dataType = Array.isArray(def) ? def[0] : def;
+        jsonPath () {
+            const current = store.getters.modalCurrentValue;
+            if (current && current.type) {
+                this.dataType = current.type;
+                this.selectedFields = Object.keys(current);
+            } else {
+                const def = this.definition.dataType;
+                this.dataType = Array.isArray(def) ? def[0] : def;
+            }
         },
         dataType (val) {
-            // initialize this.selectedFields by required fields of selected dataType.
-            const definition = Definition.structs[val];
-            this.selectedFields = Object.keys(definition).filter(key => typeof definition[key] !== 'object' || definition[key].required);
+            const current = store.getters.modalCurrentValue;
+            if (current && current.type) {
+                return;
+            } else {
+                // initialize this.selectedFields by required fields of selected dataType.
+            const definition = Definition.structs && Definition.structs[val];
+                if (definition) {
+                    this.selectedFields = Object.keys(definition).filter(key => typeof definition[key] !== 'object' || definition[key].required);
+                }
+            }
+            
         }
     },
     methods: {
-        resetModal() {
-            this.selectedFields = [];
-        },
         updateStruct() {
             store.commit('updateJson', {
                 jsonPath: store.state.modalProps.jsonPath,
@@ -110,6 +122,7 @@ export default {
                 newValue: this.initializeValue(),
                 insertPosition: store.state.modalProps.insertPosition,
             });
+            store.commit('incrementInsertPosition');
         },
         removeArrayItem () {
             store.commit('removeJsonArrayItem', store.state.modalProps.jsonPath);

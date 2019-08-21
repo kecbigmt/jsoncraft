@@ -6,7 +6,7 @@
             <textarea class="form-control" v-model="jsonText" rows="15" placeholder="// JSON here"></textarea>
         </div>
         <form v-if="json" class="mt-3">
-            <Struct root :jsonPath="['$']" :value="json"/>
+            <Struct :jsonPath="['$']" :type="json.type" :value="json"/>
         </form>
         <Modal/>
     </div>
@@ -14,7 +14,6 @@
 
 <script>
 import Definition from './config/definition.json';
-import DefaultJson from './config/default.json';
 import Struct from './components/Struct.vue';
 import Modal from './components/Modal.vue';
 
@@ -34,9 +33,6 @@ export default {
         };
     },
     computed: {
-        fields: function() {
-            return Definition.root;
-        },
         json: function() {
             return store.state.json;
         },
@@ -67,8 +63,8 @@ export default {
         }
     },
     created () {
-        this.jsonText = JSON.stringify(DefaultJson);
-        store.commit('setJson', DefaultJson);
+        this.jsonText = JSON.stringify(Definition.default);
+        store.commit('setJson', Definition.default);
     }
 }
 </script>

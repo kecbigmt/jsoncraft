@@ -1,105 +1,41 @@
 {
-    "version": "1.0",
-    "root": {
+    "default": {
+        "type": "root",
         "version": "1.0",
-        "collections": {
-            "dataType": ["title", "card"],
-            "array": true
-        }
+        "fruits": []
     },
     "structs": {
-        "title": {
-            "type": "title",
-            "title": { "dataType": "text", "required": true }
+        "root": {
+            "type": "root",
+            "version": "1.0",
+            "fruits": {
+                "dataType": ["apple", "grape", "banana"],
+                "array": true
+            }
         },
-        "card": {
-            "type": "card",
-            "multimedia": { "dataType": "multimedia" },
-            "summary": { "dataType": "summary" }
+        "apple": {
+            "type": "apple",
+            "color": { "dataType": "string", "defaultValue": "#ff0000", "required": true },
+            "price": { "dataType": "number", "required": true },
+            "shape": { "dataType": "shape" }
         },
-        "multimedia": {
-            "type": "multimedia",
-            "contents": { "dataType": ["slideshow", "banner"], "required": true },
-            "badge": { "dataType": "text" }
+        "grape": {
+            "type": "grape",
+            "color": { "dataType": "string", "defaultValue": "#0000ff", "required": true },
+            "bunchCount":  { "dataType": "number" },
+            "price": { "dataType": "number", "required": true },
+            "shape": { "dataType": "shape" }
         },
-        "slideshow": {
-            "type": "slideshow",
-            "media": { "dataType": "image", "required": true }
+        "banana": {
+            "type": "banana",
+            "color": { "dataType": "string", "defaultValue": "#00ff00", "required": true },
+            "bunchCount":  { "dataType": "number" },
+            "price": { "dataType": "number", "required": true },
+            "shape": { "dataType": "shape" }
         },
-        "banner": {
-            "type": "banner",
-            "media": { "dataType": "image", "required": true },
-            "button": { "dataType": "button" },
-            "link": { "dataType": ["outLink", "searchLink"] }
-        },
-        "summary": {
-            "type": "summary",
-            "bgColor": { "dataType": "string", "defaultValue": "#ffffff", "required": true },
-            "title": { "dataType": "text", "required": true },
-            "subtitle": { "dataType": "text" },
-            "status": { "dataType": "text" },
-            "thumbnail": { "dataType": "image" },
-            "infoList": { "dataType": ["info", "outLink", "searchLink", "splitter"], "array": true },
-            "description": { "dataType": "text", "array": true },
-            "linkList": { "dataType": ["outLink", "searchLink", "splitter"], "array": true },
-            "annotation": { "dataType": "text" }
-        },
-        "button": {
-            "label": { "dataType": "text", "required": true },
-            "bgColor": { "dataType": "string", "defaultValue": "#00a600", "required": true },
-            "link": { "dataType": ["outLink", "searchLink"] },
-            "clickLog": { "dataType": "string" }
-        },
-        "info": {
-            "type": "info",
-            "label": { "dataType": "text", "required": true }
-        },
-        "splitter": {
-            "type": "splitter",
-            "value": { "dataType": "string", "defaultValue": "·", "required": true },
-            "textColor": { "dataType": "string", "defaultValue": "#000000", "required": true }
-        },
-        "text": {
-            "type": "text",
-            "value": { "dataType": "string", "required": true },
-            "textColor": { "dataType": "string", "defaultValue": "#000000" },
-            "bgColor": { "dataType": "string", "defaultValue": "#000000" },
-            "position": { "dataType": "position" }
-        },
-        "position": {
-            "type": "position",
-            "left": { "dataType": "number" },
-            "right": { "dataType": "number" },
-            "top": { "dataType": "number" },
-            "bottom": { "dataType": "number" }
-        },
-        "outLink": {
-            "type": "outLink",
-            "value": { "dataType": "string", "required": true },
-            "label": { "dataType": "text" },
-            "clickLog": { "dataType": "string" }
-        },
-        "searchLink": {
-            "type": "searchLink",
-            "value": { "dataType": "string", "required": true },
-            "label": { "dataType": "text" },
-            "clickLog": { "dataType": "string" },
-            "meta": { "dataType": "searchMeta", "required": true }
-        },
-        "searchMeta": {
-            "type": "searchMeta",
-            "domain": { "dataType": "string", "required": true },
-            "oid": { "dataType": "string", "required": true }
-        },
-        "url": {
-            "type": "url",
-            "value": { "dataType": "string", "required": true }
-        },
-        "image": {
-            "type": "image",
-            "imageUrl": { "dataType": "url", "required": true, "description": "画像のURLを指定する" },
-            "reference": { "dataType": "outLink", "description": "Image Viewerで表示するための出典URL・タイトルを指定する"},
-            "clickLog": { "dataType": "string" }
+        "shape": {
+            "circle": { "dataType": "boolean" },
+            "weight": { "dataType": "number" }
         }
     }
 }

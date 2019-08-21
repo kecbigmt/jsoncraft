@@ -2,6 +2,8 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import jp from 'jsonpath';
 
+import Definition from './config/definition.json';
+
 Vue.use(Vuex);
 
 const initModalProps = {
@@ -27,7 +29,7 @@ const store = new Vuex.Store({
                 const oldValue = jp.query(state.json, stringPath)[0];
                 if (oldValue) {
                     Object.keys(newValue).forEach(key => {
-                        if (oldValue[key]) {
+                        if (oldValue[key] && key !== 'type') {
                             newValue[key] = oldValue[key];
                         }
                     });
@@ -70,9 +72,44 @@ const store = new Vuex.Store({
                 alert('error: removeJsonArrayItem');
             }
         },
-        setModalProps (state, modalProps) {
-            state.modalProps = modalProps;
+        setJsonPath (state, jsonPath) {
+            state.modalProps.jsonPath = jsonPath;
         },
+        setInsertPosition (state, insertPosition) {
+            state.modalProps.insertPosition = insertPosition;
+        },
+        incrementInsertPosition (state) {
+            state.modalProps.insertPosition = state.modalProps.insertPosition + 1;
+        }
+    },
+    getters: {
+        modalCurrentValue: state => {
+            if (state.modalProps.jsonPath) {
+                return jp.query(state.json, jp.stringify(state.modalProps.jsonPath))[0];
+            } else {
+                return null;
+            }
+        },
+        modalFieldDefinition: state => {
+            // extract field defenition from given jsonPath
+            let jsonPath = state.modalProps && state.modalProps.jsonPath;
+            if (jsonPath) {
+                const lastElement = jsonPath[jsonPath.length - 1];
+                if (!isNaN(lastElement)) {
+                    jsonPath = jsonPath.slice(0, jsonPath.length - 1);
+                }
+                const parent = jp.parent(store.state.json, jp.stringify(jsonPath));
+                const fieldName = jsonPath[jsonPath.length - 1];
+                if (parent) {
+                    const dataType = parent.type;
+                    return Definition.structs[dataType][fieldName];
+                } else {
+                    return null;
+                }
+            } else {
+                return null;
+            }
+        }
     }
 });
 

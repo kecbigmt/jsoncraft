@@ -45,11 +45,8 @@ export default {
     },
     methods: {
         openModal (insertPosition) {
-            store.commit('setModalProps', {
-                jsonPath: this.jsonPath, 
-                definition: this.definition,
-                insertPosition,
-            });
+            store.commit('setJsonPath', this.jsonPath);
+            store.commit('setInsertPosition', insertPosition);
         }
     }
 }

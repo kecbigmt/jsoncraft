@@ -20,7 +20,6 @@ export default {
     props: {
         label: String,
         jsonPath: Array,
-        definition: [String, Object],
     },
     computed: {
         isArrayItem () {
@@ -29,10 +28,7 @@ export default {
     },
     methods: {
         openModal () {
-            store.commit('setModalProps', { 
-                jsonPath: this.jsonPath,
-                definition: this.definition,
-            });
+            store.commit('setJsonPath', this.jsonPath);
         }
     }
 }
